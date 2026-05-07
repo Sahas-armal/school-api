@@ -1,16 +1,31 @@
 const express = require("express");
+const dotenv = require("dotenv");
+
+dotenv.config();
+
 const app = express();
-
-require("dotenv").config();
-
-const schoolRoutes = require("./routes/schoolRoutes");
-
-require("./config/db");
 
 app.use(express.json());
 
+
+const schoolRoutes = require("./routes/schoolRoutes");
 app.use("/", schoolRoutes);
 
-app.listen(process.env.PORT, () => {
-  console.log(`Server running on port ${process.env.PORT}`);
+
+const db = require("./config/db");
+
+db.connect((err) => {
+  if (err) console.log("DB error", err);
+  else console.log("DB connected ");
+});
+
+
+app.get("/", (req, res) => {
+  res.send("API working ");
+});
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log("Server running on port", PORT);
 });
